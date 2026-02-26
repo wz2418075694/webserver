@@ -5,13 +5,14 @@ import (
 	"net/http"
 )
 
-func ListeningPort() {
+func Start(addr string) error {
 
 	//监听端口本机的8080端口
 	fmt.Println("服务开启！")
-	err := http.ListenAndServe("0.0.0.0:8080", nil)
+	err := http.ListenAndServe(addr, nil)
 	if err != nil {
-		fmt.Println("连接失败！")
+		return err
 	}
 
+	return nil
 }

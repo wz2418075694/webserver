@@ -16,3 +16,15 @@
       7. --Post http://127.1:8080/student  创建(传入)单个或批量的学生信息
    8. 将所有的学生信息都保存在本地文件中，要求单个学生单个文件保存 保存格式为json
 9. ID生成器新增定时器模式，每分钟触发定时器自动更新
+
+
+
+== project
+
+--webserver 
+----httpserver 
+----idgener
+----router
+----serverinfo
+----student
+----main
