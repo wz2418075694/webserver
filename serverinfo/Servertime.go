@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// 此接口用于打印时间、客户端ID+端口、以及浏览器名字
 func Time(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("你好，王召！"))
 	//服务器的时间，年月日，时分秒 ，格式化时间

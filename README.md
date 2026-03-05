@@ -28,3 +28,18 @@
 ----serverinfo
 ----student
 ----main
+
+
+
+= todo @20260227
+1. 完善mysql针对student模块的查询
+2. 学习golang包，并在项目中全量使用，同时学会使用第三方包
+3. 学习gorm包，进一步改进mysql的操作，同时进一步学会使用第三方包
+4. 给webserver增加一个配置文件，将写死在代码里的配置抽离到配置文件，webserver.ini 参考：https://github.com/HouGuoFa/goconfiger
+5. 学习并使用gin框架 传送门： https://github.com/gin-gonic/gin   中文版：https://gin-gonic.com/zh-cn/docs/
+6. 将webserver 翻译成python语言，重新实现 webserver-py  对标gin的框架有 flash
+
+
+== book
+1. 程序员面试宝典 
+2. 剑指offer

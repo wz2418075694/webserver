@@ -12,10 +12,10 @@ func init() {
 	id = rand.Intn(100)
 	//启动定时器
 	go func() {
-		//60秒触发一次
+		//创建一个定时器，在后台监听60秒触发一次，往自己的c通道里面发送一个当前的时间
 		ticker := time.NewTicker(60 * time.Second)
 		//循环监听定时器
-		for range ticker.C {
+		for range ticker.C { //如果自己的通道里面有时间了，就执行一下随机数函数
 			id = rand.Intn(100) //更新全局变量
 		}
 	}()

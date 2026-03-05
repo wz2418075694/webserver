@@ -2,12 +2,15 @@ package studenter
 
 import (
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"net/http"
 	"os"
 )
 
 // 定义存储目录（固定路径，所有学生文件都存在这里）
-const storageDir = "D:\\GO\\webserver\\tmp"
+const (
+	storageDir string = "D:\\GO\\webserver\\tmp"
+)
 
 // init函数：程序启动时自动执行，做初始化工作
 func init() {
@@ -17,6 +20,7 @@ func init() {
 		// panic：如果目录创建失败，直接终止程序（没地方存文件，程序没法运行）
 		panic(fmt.Sprintf("创建存储目录失败: %v", err))
 	}
+
 }
 
 // student模块入库函数

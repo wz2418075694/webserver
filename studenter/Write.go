@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"webserver/mysql"
 )
 
 // 处理创建传入数据
@@ -16,6 +18,7 @@ func doWrite(w http.ResponseWriter, r *http.Request) {
 	读取所有可用的数据，直到遇到结束符（EOF），
 	并将读取到的所有数据以 []byte（字节切片）的形式返回。
 	*/
+	//读取请求体
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -27,12 +30,13 @@ func doWrite(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("收到新信息！")
 
 	//将请求体解析成json结构体
-	var stu Student
+	var stu Student //创建学生结构体对象
 	err = json.Unmarshal(body, &stu)
 	if err != nil {
-		http.Error(w, "解析结构体失败!", 500)
+		http.Error(w, "解析结构体失败!"+err.Error(), 500)
 		return
 	}
+
 	//结构体解析成功
 	//现在得到结构体后，调用刚才的函数，将这个数据写入本地文件中
 	err = saveStudentToFile(stu)
@@ -41,7 +45,34 @@ func doWrite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//保存成功，返回给客户端相应
-	w.Write([]byte("保存成功！"))
+	w.Write([]byte("保存文件成功！"))
+
+	if err := saveStudentToDB(&stu); err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Write([]byte("保存DB成功！"))
+	//defer result.Close() // 确保语句被关闭
+	fmt.Println("db存储成功")
+
+}
+func saveStudentToDB(stu *Student) error {
+	db := mysql.GetDBHandler() //获取接口
+	//执行不返回结果集的SQL语句，并返回执行结果如：影响行数、错误等
+	result, err := db.Exec("insert into student(id,name, gender, age, phone, city)"+
+		"values(?,?, ?, ?, ?, ?)",
+		stu.Id, stu.Name, stu.Gender, stu.Age, stu.Phone, stu.City)
+	if err != nil {
+		log.Fatal("插入数据失败！", err)
+	}
+	//获取影响行数
+	rowsAffectes, err := result.RowsAffected()
+	if err != nil {
+		log.Fatal("获取影响行数失败！", err)
+	}
+	log.Printf("用户插入了%d行数据", rowsAffectes)
+
+	return err
 }
 
 // 接收一个学生对象并且把他写入文件中，成功返回nil，失败返回错误信息
@@ -71,16 +102,3 @@ func saveStudentToFile(stu Student) error {
 	// 没有错误，返回nil,表示保存成功
 	return nil
 }
-
-//	filename := getFilePath("")
-//	err = dumpFile(filename, body)
-//	if err != nil {
-//		fmt.Println(err)
-//		w.Write([]byte(err.Error()))
-//		return
-//	}
-//}
-//
-//写文件
-//func dumpFile(file string, content []byte) error {
-//	return os.WriteFile(file, content, 0x777)
